@@ -27,7 +27,7 @@ The following are the minimum requirements for using our SDK
 > Instructions provided here are for Android Studio. aar libraries are not yet supported on
 > Eclipse, though some solutions are available online.
 
-1. Download the aar file from [here](https://70a4f2c223ea18c6955a-f91ceedaff225bee61d94aff812c7b48.ssl.cf5.rackcdn.com/adgatemediasdk.aar)
+1. Download the aar file from the downloads directory
 2. Add the aar file to your project, by copying it into your project’s libs folder.
 
  ![image1](https://cloud.githubusercontent.com/assets/12953988/11656906/54b19416-9dde-11e5-8c65-49dcd16c9fd2.png)
