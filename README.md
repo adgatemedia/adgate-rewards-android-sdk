@@ -65,12 +65,12 @@ import com.adgatemedia.sdk.classes.AdGateMedia;
    final HashMap<String, String> subids = new HashMap<String, String>();
    subids.put("s2", "my sub id");
 
-   AdGateMedia adGateMedia = new AdGateMedia(wallCode,userName);
+   AdGateMedia adGateMedia = new AdGateMedia(wallCode,userId);
    adGateMedia.showOfferWall(subids, YourActivity.this);
 
 ```
 
-Remember to set `wallCode` and `userName` to the appropriate values. You can get your AdGate Rewards wall code from the [Dashboard](https://panel.adgatemedia.com/affiliate/vc-walls). The `userName` values can be any alphanumeric string. You may add up to 4 subid strings to the HashMap: s2, s3, s4, and s5.
+Remember to set `wallCode` and `userId` to the appropriate values. You can get your AdGate Rewards wall code from the [Dashboard](https://panel.adgatemedia.com/affiliate/vc-walls). The `userId` values can be any alphanumeric string. You may add up to 4 subid strings to the HashMap: s2, s3, s4, and s5.
 
 ###3. Demo app
 
