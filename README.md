@@ -96,7 +96,7 @@ To get a list of latest offer wall conversions for a particular user run the fol
 ```
 
 If the call was successful, a list of conversions is passed to the
-`onSuccess` method. Eacg Conversion model has the following class definition:
+`onSuccess` method. Each Conversion model has the following class definition:
 
 ```java
 public class Conversion implements Serializable {
