@@ -1,38 +1,35 @@
-##AdGate Rewards Android SDK by AdGate Media
+## AdGate Rewards Android SDK by AdGate Media
 ### Introduction
 Thank you for choosing AdGate Media to monetize your Android app! We look forward to working with you and your users in a way that is beneficial to everyone involved. If you haven't done so already, please sign up for an affiliate account at http://www.adgatemedia.com.
 
-Our SDK will allow you to easily present an offer wall in your native Android app. To display it, please follow these 3 steps:
+Our SDK will allow you to easily present an offer wall in your native Android app, as well as display native video ads.
 
 1. [Install the SDK](#1-install-sdk)
 2. [Display offer wall to user](#2-display-the-offer-wall)
-3. [Check our Demo app for an example](#3-demo-app)
+3. [Get a list of the latest offer wall conversions](#3-get-latest-conversions)
+4. [Display fullscreen video ads](#4-display-video-ads)
+5. [Enable console messages](#4-display-console-messages)
+6. [Check our Demo app for an example](#6-demo-app)
 
-###Requirements
+### Requirements
 
 The following are the minimum requirements for using our SDK
 
-- Android SDK minimum version 9 (Gingerbread 2.3.6)
+- Android SDK minimum version 14 (Ice Cream Sandwich 4.0)
 - Minimum hardware requirement is ARMV7
 - Java JDK 1.6 or greater
-- The following permission added to your manifest:
 
-``` xml
-<uses-permission android:name="android.permission.INTERNET"/>
-
-```
-
-###1. Install SDK
+### 1. Install SDK
 
 > Instructions provided here are for Android Studio. aar libraries are not yet supported on
 > Eclipse, though some solutions are available online.
 
 1. Download the aar file from the downloads directory
-2. Add the aar file to your project, by copying it into your project’s libs folder.
+2. Add the aar file to your project, by copying it into your project's libs folder.
 
  ![image1](https://cloud.githubusercontent.com/assets/12953988/11656906/54b19416-9dde-11e5-8c65-49dcd16c9fd2.png)
 
-3. Add the following lines of code to your app's `build.gradle` file, so that Android Studio 
+3. Add the following lines of code to your app's `build.gradle` file, so that Android Studio
 recognizes and builds the library along with your app.
 
 ``` xml
@@ -43,35 +40,133 @@ repositories {
 }
 
 dependencies {
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.google.android.gms:play-services-iid:10.2.1'
+    compile 'com.google.android.gms:play-services-ads:10.2.1'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.squareup.okio:okio:1.12.0'
+    compile 'com.squareup.okhttp3:okhttp:3.7.0'
+    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.facebook.network.connectionclass:connectionclass:1.0.1'
     compile(name:'adgatemediasdk', ext:'aar')
 }
-
 ```
 At this point Android Studio shouldn't throw any errors related to the library.
 
-###2. Display the offer wall
+### 2. Display the offer wall
 
 1. In your activity, where you intend to show the offer wall, add the following import statement:
 
 ```java
-
 import com.adgatemedia.sdk.classes.AdGateMedia;
-
 ```
 
-2. To show the offer wall, from any place in your activity add the following code:
+2. To show the offer wall, from any place in your running activity add the following code:
 
 ```java
    final HashMap<String, String> subids = new HashMap<String, String>();
    subids.put("s2", "my sub id");
 
-   AdGateMedia adGateMedia = new AdGateMedia(wallCode,userId);
-   adGateMedia.showOfferWall(subids, YourActivity.this);
-
+   AdGateMedia adGateMedia = AdGateMedia.getInstance();
+   adGateMedia.showOfferWall(YourActivity.this,
+                             wallCode,
+                             userId,
+                             subids
+   );
 ```
 
 Remember to set `wallCode` and `userId` to the appropriate values. You can get your AdGate Rewards wall code from the [Dashboard](https://panel.adgatemedia.com/affiliate/vc-walls). The `userId` values can be any alphanumeric string. You may add up to 4 subid strings to the HashMap: s2, s3, s4, and s5.
 
-###3. Demo app
+### 3. Get a list of the latest offer wall conversions
+
+To get a list of latest offer wall conversions for a particular user run the following code in your activity:
+
+```java
+   AdGateMedia.getInstance().getConversions(this, "nqeX", "username", testSubIds, new OnConversionsReceived() {
+      @Override
+      public void onSuccess(List<Conversion> conversions) {
+          // List of conversions
+      }
+
+      @Override
+      public void onError(String message) {
+          // Fired when any error occurs
+      }
+   });
+```
+
+If the call was successful, a list of conversions is passed to the
+`onSuccess` method. Eacg Conversion model has the following class definition:
+
+```java
+public class Conversion implements Serializable {
+    public int offerId;
+    public String title;
+    public String txId;
+    public double points;
+    public int payout; // in cents USD
+    public String subid2;
+    public String subid3;
+    public String subid4;
+    public String subid5;
+}
+```
+
+### 4. Display fullscreen video ads.
+
+To show a fullscreen video ad use the following:
+
+```java
+
+   final HashMap<String, String> subids = new HashMap<String, String>();
+   subids.put("s2", "my sub id");
+
+   AdGateMedia adGateMedia = AdGateMedia.getInstance();
+   final long videoCanBeClosedAfterMillis = 5000L;
+   adGateMedia.showVideo(YourActivity.this,
+                         toolId,
+                         userId, // optional, can be null
+                         subids, // optional, can be null
+                         new AdGateMedia.OnVideoWatchedListener() { // optional, can be null
+                             @Override
+                             public void onVideoWatched() {
+                                 // Here user finishes watching a video
+                             }
+                         },
+                         videoCanBeClosedAfterMs);
+```
+
+You can get `toolId` from the [Videos](https://panel.adgatemedia.com/affiliate/video)
+
+Here `userId`, `subids`, `onVideoWatchedListener` can be null.
+
+The `videoCanBeClosedAfterMs` parameter is used to determine when to display the X close button in milliseconds. The video cannot be closed before this button displays. Use `0` to display it immediately. If you don't want to let
+your users close the video you can use an overloaded method without this parameter.
+
+```java
+
+   AdGateMedia adGateMedia = AdGateMedia.getInstance();
+   adGateMedia.showVideo(YourActivity.this,
+                      toolId,
+                      userId, // optional, can be null
+                      subids, // optional, can be null
+                      new AdGateMedia.OnVideoWatchedListener() { // optional, can be null
+                          @Override
+                          public void onVideoWatched() {
+                              // Here user finishes watching a video
+                          }
+                      });
+```
+
+### 5. Enable console messages
+To enable debugging, warning, and error messages run the following line of code:
+
+```java
+   AdGateMedia.getInstance().setDebugMode(true);
+```
+
+This will log messages to the console as well as to a log file. Make sure you disable debug mode before publishing your app to the Google Play Store.
+
+### 6. Demo app
 
 This repository contains a demo Android app that shows how to implement our SDK.
