@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">AdgateRewardExample</string>
+    <string name="app_name">SdkTest</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="launch_offerwall">Launch Offerwall</string>
+    <string name="launch_video_ad_screen">Launch video ad screen</string>
+    <string name="see_latest_conversions">See latest conversions</string>
 </resources>
