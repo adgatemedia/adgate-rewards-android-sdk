@@ -7,9 +7,10 @@ Our SDK will allow you to easily present an offer wall in your native Android ap
 1. [Install the SDK](#1-install-sdk)
 2. [Display offer wall to user](#2-display-the-offer-wall)
 3. [Get a list of the latest offer wall conversions](#3-get-latest-conversions)
-4. [Display fullscreen video ads](#4-display-video-ads)
-5. [Enable console messages](#4-display-console-messages)
-6. [Check our Demo app for an example](#6-demo-app)
+4. [Load video ads](#4-load-video-ads)
+5. [Display fullscreen video ads](#5-display-video-ads)
+6. [Enable console messages](#6-display-console-messages)
+7. [Check our Demo app for an example](#7-demo-app)
 
 ### Requirements
 
@@ -112,9 +113,9 @@ public class Conversion implements Serializable {
 }
 ```
 
-### 4. Display fullscreen video ads.
+### 4. Load video ads.
 
-To show a fullscreen video ad use the following:
+To load a video ad use the following:
 
 ```java
 
@@ -122,23 +123,51 @@ To show a fullscreen video ad use the following:
    subids.put("s2", "my sub id");
 
    AdGateMedia adGateMedia = AdGateMedia.getInstance();
-   final long videoCanBeClosedAfterMillis = 5000L;
-   adGateMedia.showVideo(YourActivity.this,
+   adGateMedia.loadVideo(YourActivity.this,
+                         subids, // optional, can be null
                          toolId,
                          userId, // optional, can be null
-                         subids, // optional, can be null
-                         new AdGateMedia.OnVideoWatchedListener() { // optional, can be null
+                         new OnVideoLoadFailed() { // optional, can be null
                              @Override
-                             public void onVideoWatched() {
-                                 // Here user finishes watching a video
+                             public void onVideoLoadFailed(String reason) {
+                                 // Here you can handle loading errors
                              }
                          },
-                         videoCanBeClosedAfterMs);
+                         new OnVideoLoadSuccess() { // optional, can be null
+                             @Override
+                             public void OnVideoLoadSuccess() {
+                                 // Here you can call the showVideo method
+                             }
+                         });
 ```
 
 You can get `toolId` from the [Videos](https://panel.adgatemedia.com/affiliate/video)
 
-Here `userId`, `subids`, `onVideoWatchedListener` can be null.
+Here `userId`, `subids`, `onVideoLoadFailed` and `OnVideoLoadSuccess` can be null.
+
+### 5. Display fullscreen video ads
+
+Once video is loaded you can display it by calling the `showVideo` method.
+
+```java
+
+   final long videoCanBeClosedAfterMs = 5000L;
+   AdGateMedia adGateMedia = AdGateMedia.getInstance();
+   adGateMedia.showVideo(YourActivity.this,
+                         new OnVideoClosed() { // optional, can be null
+                             @Override
+                             public void onVideoClosed() {
+                                 // Here user finishes watching a video
+                             }
+                         },
+                         new OnUserLeftApplication() { // optional, can be null
+                             @Override
+                             public void onUserLeftApplication() {
+                                 // Here user leaves your app and goes to a
+                                 // Google Play page
+                             }
+                         }, videoCanBeClosedAfterMs);
+```
 
 The `videoCanBeClosedAfterMs` parameter is used to determine when to display the X close button in milliseconds. The video cannot be closed before this button displays. Use `0` to display it immediately. If you don't want to let
 your users close the video you can use an overloaded method without this parameter.
@@ -147,18 +176,35 @@ your users close the video you can use an overloaded method without this paramet
 
    AdGateMedia adGateMedia = AdGateMedia.getInstance();
    adGateMedia.showVideo(YourActivity.this,
-                      toolId,
-                      userId, // optional, can be null
-                      subids, // optional, can be null
-                      new AdGateMedia.OnVideoWatchedListener() { // optional, can be null
-                          @Override
-                          public void onVideoWatched() {
-                              // Here user finishes watching a video
-                          }
-                      });
+                         new OnVideoClosed() { // optional, can be null
+                             @Override
+                                 public void onVideoClosed() {
+                                     // Here user finishes watching a video
+                                 }     
+                         },
+                         new OnUserLeftApplication() { // optional, can be null
+                             @Override
+                             public void onUserLeftApplication() {
+                                 // Here user leaves your app and goes to a
+                                 // Google Play page
+                             }
+                         });
 ```
 
-### 5. Enable console messages
+If you call showVideo from outside the `onVideoLoadSuccess` method you can check if video was successfully downloaded before
+by calling the `hasDownloadedVideo` method.
+
+```java
+
+   AdGateMedia adGateMedia = AdGateMedia.getInstance();
+   boolean canShowVideo = adGateMedia.hasDownloadedVideo(YourActivity.this);
+   if (canShowVideo) {
+       // Here you can call showVideo
+   }
+
+```
+
+### 6. Enable console messages
 To enable debugging, warning, and error messages run the following line of code:
 
 ```java
@@ -167,6 +213,6 @@ To enable debugging, warning, and error messages run the following line of code:
 
 This will log messages to the console as well as to a log file. Make sure you disable debug mode before publishing your app to the Google Play Store.
 
-### 6. Demo app
+### 7. Demo app
 
 This repository contains a demo Android app that shows how to implement our SDK.
