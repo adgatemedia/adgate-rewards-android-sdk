@@ -2,6 +2,7 @@ package com.adgatereward.adgaterewardexample;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 import com.adgatemedia.sdk.classes.AdGateMedia;
 import com.adgatemedia.sdk.model.Conversion;
 import com.adgatemedia.sdk.network.OnConversionsReceived;
+import com.adgatemedia.sdk.network.OnVideoLoadFailed;
+import com.adgatemedia.sdk.network.OnVideoLoadSuccess;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        showVideoLoadProgress(false);
     }
 
     /**
@@ -59,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
      * Don't call it manually.
      */
     public void launchVideoAd(View view) {
-        showVideo();
+        loadVideo();
     }
 
     /**
@@ -91,10 +95,11 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    @NonNull
     private String textOf(int editTextResId) {
         EditText editText = (EditText) findViewById(editTextResId);
         if (editText == null) {
-            return null;
+            throw new RuntimeException("No edit text with given ID");
         }
 
         return editText.getText().toString();
@@ -119,24 +124,51 @@ public class MainActivity extends AppCompatActivity {
         setTextById("Subid 5", R.id.s5);
     }
 
-    private void showVideo() {
+    private void loadVideo() {
         final long videoCanBeClosedAfterMillis = 5000L;
 
-        AdGateMedia adGateMedia = AdGateMedia.getInstance();
+        final AdGateMedia adGateMedia = AdGateMedia.getInstance();
         adGateMedia.setDebugMode(true);
-        adGateMedia.showVideo(this,
+
+        showVideoLoadProgress(true);
+        adGateMedia.loadVideo(this,
+                getSubids(),
                 textOf(R.id.tool_id),
                 textOf(R.id.user_id),
-                getSubids(),
-                new AdGateMedia.OnVideoWatchedListener() {
+                new OnVideoLoadFailed() {
                     @Override
-                    public void onVideoWatched() {
+                    public void onVideoLoadFailed(String reason) {
                         Toast.makeText(MainActivity.this,
-                                "Callback from test app fired",
-                                Toast.LENGTH_SHORT)
-                                .show();
+                                "Error: " + reason, Toast.LENGTH_SHORT).show();
+                        showVideoLoadProgress(false);
                     }
                 },
-                videoCanBeClosedAfterMillis);
+                new OnVideoLoadSuccess() {
+                    @Override
+                    public void onVideoLoadSuccess() {
+                        adGateMedia.showVideo(MainActivity.this, new AdGateMedia.OnVideoClosed() {
+                            @Override
+                            public void onVideoClosed() {
+                                Toast.makeText(MainActivity.this,
+                                        "Video closed", Toast.LENGTH_SHORT).show();
+                            }
+                        }, new AdGateMedia.OnUserLeftApplication() {
+                            @Override
+                            public void onUserLeftApplication() {
+                                Toast.makeText(MainActivity.this, "User left the app", Toast.LENGTH_SHORT).show();
+                            }
+                        }, videoCanBeClosedAfterMillis);
+                        showVideoLoadProgress(false);
+                    }
+                }
+        );
+    }
+
+    private void showVideoLoadProgress(boolean showProgress) {
+        View progressView = findViewById(R.id.load_video_activity_indicator);
+        View loadVideoButton = findViewById(R.id.load_video_button);
+
+        progressView.setVisibility(showProgress ? View.VISIBLE : View.INVISIBLE);
+        loadVideoButton.setVisibility(showProgress ? View.INVISIBLE : View.VISIBLE);
     }
 }

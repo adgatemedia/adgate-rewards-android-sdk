@@ -1,5 +1,4 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,8 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -24,7 +23,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:text="Jane Doe"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -41,7 +40,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:text="Subid 2"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -58,7 +57,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:text="Subid 3"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -75,7 +74,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:text="Subid 4"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -92,7 +91,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:text="Subid 5"
-                tools:ignore="HardcodedText"/>
+                tools:ignore="HardcodedText" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -108,7 +107,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textSize="12dp"
-                tools:ignore="HardcodedText,SpUsage"/>
+                tools:ignore="HardcodedText,SpUsage" />
         </android.support.design.widget.TextInputLayout>
 
         <Button
@@ -117,29 +116,41 @@
             android:layout_marginTop="8dp"
             android:onClick="reset"
             android:text="reset to defaults"
-            tools:ignore="HardcodedText"/>
+            tools:ignore="HardcodedText" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:onClick="launchOfferwall"
             android:layout_marginTop="32dp"
-            android:text="@string/launch_offerwall"/>
+            android:onClick="launchOfferwall"
+            android:text="@string/launch_offerwall" />
 
-        <Button
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:onClick="launchVideoAd"
-            android:text="@string/launch_video_ad_screen"/>
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/load_video_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:onClick="launchVideoAd"
+                android:text="@string/launch_video_ad_screen" />
+
+            <ProgressBar
+                android:id="@+id/load_video_activity_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:onClick="seeLatestConversions"
-            android:text="@string/see_latest_conversions"/>
+            android:text="@string/see_latest_conversions" />
 
         <ProgressBar
             android:id="@+id/activity_indicator"
@@ -147,7 +158,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
     </LinearLayout>
 
