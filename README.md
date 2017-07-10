@@ -141,7 +141,7 @@ public class Conversion implements Serializable {
 
 ### 5. Load video ads.
 
-To load a video ad use the following:
+The first step of showing a video is to load it in the background. To load a video ad use the following:
 
 ```java
 
@@ -167,9 +167,9 @@ To load a video ad use the following:
                          });
 ```
 
-You can get `toolId` from the [Videos](https://panel.adgatemedia.com/affiliate/video)
+You can get `toolId` from the [Videos](https://panel.adgatemedia.com/affiliate/video) page.
 
-Here `userId`, `subids`, `onVideoLoadFailed` and `OnVideoLoadSuccess` can be null.
+Here `userId`, `subids`, `onVideoLoadFailed` and `OnVideoLoadSuccess` can be null. You may pass up to 4 sub IDs, s2-s5. These values will be returned to you via postbacks when a user converts.
 
 ### 6. Display fullscreen video ads
 
