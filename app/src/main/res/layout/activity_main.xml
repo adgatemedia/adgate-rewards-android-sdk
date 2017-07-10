@@ -118,13 +118,26 @@
             android:text="reset to defaults"
             tools:ignore="HardcodedText" />
 
-        <Button
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            android:onClick="launchOfferwall"
-            android:text="@string/launch_offerwall" />
+            android:layout_marginTop="32dp">
+
+            <Button
+                android:id="@+id/load_offer_wall_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:onClick="launchOfferwall"
+                android:text="@string/load_and_show_offerwall" />
+
+            <ProgressBar
+                android:id="@+id/load_offer_wall_activity_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
 
         <FrameLayout
             android:layout_width="match_parent"

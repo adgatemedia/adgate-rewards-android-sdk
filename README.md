@@ -5,12 +5,13 @@ Thank you for choosing AdGate Media to monetize your Android app! We look forwar
 Our SDK will allow you to easily present an offer wall in your native Android app, as well as display native video ads.
 
 1. [Install the SDK](#1-install-sdk)
-2. [Display offer wall to user](#2-display-the-offer-wall)
-3. [Get a list of the latest offer wall conversions](#3-get-latest-conversions)
-4. [Load video ads](#4-load-video-ads)
-5. [Display fullscreen video ads](#5-display-video-ads)
-6. [Enable console messages](#6-display-console-messages)
-7. [Check our Demo app for an example](#7-demo-app)
+2. [Load an offer wall](#2-load-the-offer-wall)
+3. [Display the offer wall](#3-display-the-offer-wall)
+4. [Get a list of the latest offer wall conversions](#3-get-a-list-of-the-latest-offer-wall-conversions)
+5. [Load video ads](#4-load-video-ads)
+6. [Display fullscreen video ads](#5-display-video-ads)
+7. [Enable console messages](#6-display-console-messages)
+8. [Check our Demo app for an example](#7-demo-app)
 
 ### Requirements
 
@@ -54,7 +55,7 @@ dependencies {
 ```
 At this point Android Studio shouldn't throw any errors related to the library.
 
-### 2. Display the offer wall
+### 2. Load the offer wall
 
 1. In your activity, where you intend to show the offer wall, add the following import statement:
 
@@ -62,23 +63,48 @@ At this point Android Studio shouldn't throw any errors related to the library.
 import com.adgatemedia.sdk.classes.AdGateMedia;
 ```
 
-2. To show the offer wall, from any place in your running activity add the following code:
+2. To load the offer wall, from any place in your running activity add the following code:
 
 ```java
    final HashMap<String, String> subids = new HashMap<String, String>();
    subids.put("s2", "my sub id");
-
    AdGateMedia adGateMedia = AdGateMedia.getInstance();
-   adGateMedia.showOfferWall(YourActivity.this,
-                             wallCode,
-                             userId,
-                             subids
-   );
+   
+   adGateMedia.loadOfferWall(YourActivity.this,
+                   wallCode,
+                   userId,
+                   subids,
+                   new OnOfferWallLoadSuccess() {
+                       @Override
+                       public void onOfferWallLoadSuccess() {
+                           // Here you can call adGateMedia.showOfferWall();
+                       }
+                   },
+                   new OnOfferWallLoadFailed() {
+                       @Override
+                       public void onOfferWallLoadFailed(String reason) {
+                           // Here you handle the errors with provided reason
+                       }
+                   });
 ```
 
 Remember to set `wallCode` and `userId` to the appropriate values. You can get your AdGate Rewards wall code from the [Dashboard](https://panel.adgatemedia.com/affiliate/vc-walls). The `userId` values can be any alphanumeric string. You may add up to 4 subid strings to the HashMap: s2, s3, s4, and s5.
 
-### 3. Get a list of the latest offer wall conversions
+### 3. Display the offer wall
+Once offer wall is loaded you can display it by calling the showOfferWall method.
+```java
+    AdGateMedia.getInstance().showOfferWall(YourActivity.this,
+                                new AdGateMedia.OnOfferWallClosed() {
+                                    @Override
+                                    public void onOfferWallClosed() {
+                                        // Here you handle the 'Offer wall has just been closed' event
+                                    }
+                                });
+
+```
+
+
+### 4. Get a list of the latest offer wall conversions
 
 To get a list of latest offer wall conversions for a particular user run the following code in your activity:
 
@@ -113,7 +139,7 @@ public class Conversion implements Serializable {
 }
 ```
 
-### 4. Load video ads.
+### 5. Load video ads.
 
 To load a video ad use the following:
 
@@ -145,7 +171,7 @@ You can get `toolId` from the [Videos](https://panel.adgatemedia.com/affiliate/v
 
 Here `userId`, `subids`, `onVideoLoadFailed` and `OnVideoLoadSuccess` can be null.
 
-### 5. Display fullscreen video ads
+### 6. Display fullscreen video ads
 
 Once video is loaded you can display it by calling the `showVideo` method.
 
@@ -204,7 +230,7 @@ by calling the `hasDownloadedVideo` method.
 
 ```
 
-### 6. Enable console messages
+### 7. Enable console messages
 To enable debugging, warning, and error messages run the following line of code:
 
 ```java
@@ -213,6 +239,6 @@ To enable debugging, warning, and error messages run the following line of code:
 
 This will log messages to the console as well as to a log file. Make sure you disable debug mode before publishing your app to the Google Play Store.
 
-### 7. Demo app
+### 8. Demo app
 
 This repository contains a demo Android app that shows how to implement our SDK.

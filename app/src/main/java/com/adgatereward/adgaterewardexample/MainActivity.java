@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.adgatemedia.sdk.classes.AdGateMedia;
 import com.adgatemedia.sdk.model.Conversion;
 import com.adgatemedia.sdk.network.OnConversionsReceived;
+import com.adgatemedia.sdk.network.OnOfferWallLoadFailed;
+import com.adgatemedia.sdk.network.OnOfferWallLoadSuccess;
 import com.adgatemedia.sdk.network.OnVideoLoadFailed;
 import com.adgatemedia.sdk.network.OnVideoLoadSuccess;
 
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         showVideoLoadProgress(false);
+        showOfferWallLoadProgress(false);
     }
 
     /**
@@ -51,11 +54,33 @@ public class MainActivity extends AppCompatActivity {
      * Don't call it manually.
      */
     public void launchOfferwall(View view) {
+        showOfferWallLoadProgress(true);
         AdGateMedia.getInstance().setDebugMode(true);
-        AdGateMedia.getInstance().showOfferWall(MainActivity.this,
+        AdGateMedia.getInstance().loadOfferWall(MainActivity.this,
                 "nqeX",
                 textOf(R.id.user_id),
-                getSubids());
+                getSubids(),
+                new OnOfferWallLoadSuccess() {
+                    @Override
+                    public void onOfferWallLoadSuccess() {
+                        showOfferWallLoadProgress(false);
+                        AdGateMedia.getInstance().showOfferWall(MainActivity.this,
+                                new AdGateMedia.OnOfferWallClosed() {
+                                    @Override
+                                    public void onOfferWallClosed() {
+                                        Toast.makeText(MainActivity.this,
+                                                "Offer wall closed", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                },
+                new OnOfferWallLoadFailed() {
+                    @Override
+                    public void onOfferWallLoadFailed(String reason) {
+                        showOfferWallLoadProgress(false);
+                        Toast.makeText(MainActivity.this, "Error: " + reason, Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     /**
@@ -71,10 +96,11 @@ public class MainActivity extends AppCompatActivity {
      * Don't call it manually.
      */
     public void seeLatestConversions(View view) {
-        AdGateMedia.getInstance().setDebugMode(true);
+        AdGateMedia adGateMedia = AdGateMedia.getInstance();
+        adGateMedia.setDebugMode(true);
         final View activityIndicator = findViewById(R.id.activity_indicator);
         activityIndicator.setVisibility(View.VISIBLE);
-        AdGateMedia.getConversions(this,
+        adGateMedia.getConversions(this,
                 "nqeX",
                 textOf(R.id.user_id),
                 getSubids(),
@@ -168,7 +194,18 @@ public class MainActivity extends AppCompatActivity {
         View progressView = findViewById(R.id.load_video_activity_indicator);
         View loadVideoButton = findViewById(R.id.load_video_button);
 
+        showLoadProgrees(loadVideoButton, progressView, showProgress);
+    }
+
+    private void showOfferWallLoadProgress(boolean showProgress) {
+        View progressView = findViewById(R.id.load_offer_wall_activity_indicator);
+        View loadOfferwallButton = findViewById(R.id.load_offer_wall_button);
+
+        showLoadProgrees(loadOfferwallButton, progressView, showProgress);
+    }
+
+    private void showLoadProgrees(View mainView, View progressView, boolean showProgress) {
         progressView.setVisibility(showProgress ? View.VISIBLE : View.INVISIBLE);
-        loadVideoButton.setVisibility(showProgress ? View.INVISIBLE : View.VISIBLE);
+        mainView.setVisibility(showProgress ? View.INVISIBLE : View.VISIBLE);
     }
 }
