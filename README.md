@@ -42,7 +42,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.android.gms:play-services-iid:10.2.1'
     compile 'com.google.android.gms:play-services-ads:10.2.1'
     compile 'com.google.code.gson:gson:2.8.0'
