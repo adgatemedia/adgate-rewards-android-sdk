@@ -108,7 +108,10 @@ Once offer wall is loaded you can display it by calling the showOfferWall method
 To get a list of latest offer wall conversions for a particular user run the following code in your activity:
 
 ```java
-   AdGateMedia.getInstance().getConversions(this, "nqeX", "username", testSubIds, new OnConversionsReceived() {
+   final HashMap<String, String> subids = new HashMap<String, String>();
+   subids.put("s2", "my sub id");
+   
+   AdGateMedia.getInstance().getConversions(this, wallCode, userId, subids, new OnConversionsReceived() {
       @Override
       public void onSuccess(List<Conversion> conversions) {
           // List of conversions
@@ -120,6 +123,8 @@ To get a list of latest offer wall conversions for a particular user run the fol
       }
    });
 ```
+
+The `wallCode` for your AdGate Rewards wall can be found on the [AdGate Rewards panel page](https://panel.adgatemedia.com/affiliate/vc-walls). The `userId` value is your app's internal user id for whom you'd like to check for conversions. `subids` is a hashmap of the subid's that was used when loading the offer wall.
 
 If the call was successful, a list of conversions is passed to the
 `onSuccess` method. Each Conversion model has the following class definition:
