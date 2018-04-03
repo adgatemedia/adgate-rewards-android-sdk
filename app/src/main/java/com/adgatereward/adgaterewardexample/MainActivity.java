@@ -2,6 +2,7 @@ package com.adgatereward.adgaterewardexample;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -24,6 +25,8 @@ import java.util.List;
  * Showcase activity for {@link AdGateMedia}.
  */
 public class MainActivity extends AppCompatActivity {
+
+    AdGateMedia adGateMedia = null;
 
     private HashMap<String, String> getSubids() {
         HashMap<String, String> subids = new HashMap<>();
@@ -150,10 +153,11 @@ public class MainActivity extends AppCompatActivity {
         setTextById("Subid 5", R.id.s5);
     }
 
+
     private void loadVideo() {
         final long videoCanBeClosedAfterMillis = 5000L;
 
-        final AdGateMedia adGateMedia = AdGateMedia.getInstance();
+        adGateMedia = AdGateMedia.getInstance();
         adGateMedia.setDebugMode(true);
 
         showVideoLoadProgress(true);
@@ -161,33 +165,30 @@ public class MainActivity extends AppCompatActivity {
                 getSubids(),
                 textOf(R.id.tool_id),
                 textOf(R.id.user_id),
-                new OnVideoLoadFailed() {
-                    @Override
-                    public void onVideoLoadFailed(String reason) {
-                        Toast.makeText(MainActivity.this,
-                                "Error: " + reason, Toast.LENGTH_SHORT).show();
-                        showVideoLoadProgress(false);
-                    }
-                },
-                new OnVideoLoadSuccess() {
-                    @Override
-                    public void onVideoLoadSuccess() {
-                        adGateMedia.showVideo(MainActivity.this, new AdGateMedia.OnVideoClosed() {
-                            @Override
-                            public void onVideoClosed() {
-                                Toast.makeText(MainActivity.this,
-                                        "Video closed", Toast.LENGTH_SHORT).show();
-                            }
-                        }, new AdGateMedia.OnUserLeftApplication() {
-                            @Override
-                            public void onUserLeftApplication() {
-                                Toast.makeText(MainActivity.this, "User left the app", Toast.LENGTH_SHORT).show();
-                            }
-                        }, videoCanBeClosedAfterMillis);
-                        showVideoLoadProgress(false);
-                    }
-                }
+                null,
+                null
         );
+
+        attemptToShowVideo();
+    }
+
+    private void attemptToShowVideo() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                boolean canShowVideo = adGateMedia.hasDownloadedVideo(MainActivity.this);
+
+                if (!canShowVideo) {
+                    attemptToShowVideo();
+                    Toast.makeText(MainActivity.this, "Video not loaded yet", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                Toast.makeText(MainActivity.this, "Video loaded!!!! Going to show", Toast.LENGTH_LONG).show();
+                // Actions to do after 10 seconds
+                adGateMedia.showVideo(MainActivity.this, null, null, 0);
+            }
+        }, 5000);
     }
 
     private void showVideoLoadProgress(boolean showProgress) {
