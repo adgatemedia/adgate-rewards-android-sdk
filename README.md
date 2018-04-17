@@ -114,7 +114,21 @@ To get a list of latest offer wall conversions for a particular user run the fol
    AdGateMedia.getInstance().getConversions(this, wallCode, userId, subids, new OnConversionsReceived() {
       @Override
       public void onSuccess(List<Conversion> conversions) {
-          // List of conversions
+          // Here you can loop through every conversion and process it.
+          // conversions.size() holds the amount of new conversions to process.
+          for (Conversion conversion : conversions)  {
+              Log.i("AdGateRewards", "Received new conversion: " +
+              "offer ID: " + String.valueOf(conversion.offerId) +
+              " offer title: " + conversion.title +
+              " transaction ID: " + conversion.txId +
+              " points earned: " + String.valueOf(conversion.points) +
+              " payout in cents:" + String.valueOf(conversion.payout) +
+              " subid 2: "+conversion.subid2 +
+              " subid 3: "+conversion.subid3 +
+              " subid 4: "+conversion.subid4 +
+              " subid 5: "+conversion.subid5
+              );
+          }
       }
 
       @Override
