@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,6 +25,12 @@ import java.util.List;
  * Showcase activity for {@link AdGateMedia}.
  */
 public class MainActivity extends AppCompatActivity {
+
+    /**
+     * Replace this with your personal wall's code
+     * @see String https://panel.adgatemedia.com/affiliate/vc-walls
+     */
+    public static String wallId = "nqeX";
 
     private HashMap<String, String> getSubids() {
         HashMap<String, String> subids = new HashMap<>();
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         showOfferWallLoadProgress(true);
         AdGateMedia.getInstance().setDebugMode(true);
         AdGateMedia.getInstance().loadOfferWall(MainActivity.this,
-                "nqeX",
+                MainActivity.wallId,
                 textOf(R.id.user_id),
                 getSubids(),
                 new OnOfferWallLoadSuccess() {
@@ -101,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         final View activityIndicator = findViewById(R.id.activity_indicator);
         activityIndicator.setVisibility(View.VISIBLE);
         adGateMedia.getConversions(this,
-                "nqeX",
+                MainActivity.wallId,
                 textOf(R.id.user_id),
                 getSubids(),
                 new OnConversionsReceived() {
@@ -110,6 +117,22 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this,
                                 "Total conversions: " + conversions.size(),
                                 Toast.LENGTH_SHORT).show();
+
+                        for (Conversion conversion : conversions)  {
+                            // Here you can loop through every conversion and process it.
+                            Log.i("AdGateRewards", "Received new conversion: " +
+                            "offer ID: " + String.valueOf(conversion.offerId) +
+                            " offer title: " + conversion.title +
+                            " transaction ID: " + conversion.txId +
+                            " points earned: " + String.valueOf(conversion.points) +
+                            " payout in cents:" + String.valueOf(conversion.payout) +
+                            " subid 2: "+conversion.subid2 +
+                            " subid 3: "+conversion.subid3 +
+                            " subid 4: "+conversion.subid4 +
+                            " subid 5: "+conversion.subid5
+                            );
+                        }
+
                         activityIndicator.setVisibility(View.GONE);
                     }
 
@@ -174,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onVideoLoadSuccess() {
                         adGateMedia.showVideo(MainActivity.this, new AdGateMedia.OnVideoClosed() {
                             @Override
-                            public void onVideoClosed() {
+                            public void onVideoWatchedAndClosed() {
                                 Toast.makeText(MainActivity.this,
                                         "Video closed", Toast.LENGTH_SHORT).show();
                             }
