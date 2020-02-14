@@ -42,14 +42,14 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-iid:10.2.1'
-    compile 'com.google.android.gms:play-services-ads:10.2.1'
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.squareup.okio:okio:1.12.0'
-    compile 'com.squareup.okhttp3:okhttp:3.7.0'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.facebook.network.connectionclass:connectionclass:1.0.1'
-    compile(name:'adgatemediasdk', ext:'aar')
+    implementation 'com.google.android.gms:play-services-iid:10.2.1'
+    implementation 'com.google.android.gms:play-services-ads:10.2.1'
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.squareup.okio:okio:1.12.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.7.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.facebook.network.connectionclass:connectionclass:1.0.1'
+    implementation(name:'adgatemediasdk', ext:'aar')
 }
 ```
 At this point Android Studio shouldn't throw any errors related to the library.
