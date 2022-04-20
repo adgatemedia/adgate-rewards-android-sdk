@@ -139,25 +139,6 @@
 
         </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/load_video_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:onClick="launchVideoAd"
-                android:text="@string/launch_video_ad_screen" />
-
-            <ProgressBar
-                android:id="@+id/load_video_activity_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-        </FrameLayout>
-
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
